@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebApp.Areas.Identity.Data
+
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UM
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    @using (Html.BeginForm("Submit", "Home", FormMethod.Post))
+    {
+        <div class="text-center">
+            <div class="btn-group col-md-auto offset-md-12" role="group" aria-label="Basic example">
+                <input class="btn mb-3 mr-lg-3 btn-dark" type="submit" value="Delete" name="action">
+                <input class="btn mb-3 mr-lg-3 btn-dark" type="submit" value="Block" name="action">
+                <input class="btn mb-3 mr-lg-3 btn-dark" type="submit" value="Unblock" name="action">
+            </div>
+        </div>
+
+            <div class="text-center">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="1" onClick="toggle(this)" name="user">
+                                    <label class="custom-control-label" for="1"></label>
+                                </div>
+                                <script>
+                                    function toggle(source) {
+                                        checkboxes = document.getElementsByName('user');
+                                        for (var i = 0, n = checkboxes.length; i < n; i++) {
+                                            checkboxes[i].checked = source.checked;
+                                        }
+                                    }
+                                </script>
+                            </th>
+                            <th>Id</th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Email</th>
+                            <th>Registration Date</th>
+                            <th>Last visit</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in UM.Users.ToList())
+                        {
+                            <tr>
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" value="@user.Id" id="@user.Id" name="user">
+                                        <label class="custom-control-label" for="@user.Id"></label>
+                                    </div>
+                                </td>
+                                <td>@user.Id</td>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>@user.RegDate</td>
+                                <td>@user.LogDate</td>
+                                @if (@user.Status)
+                                {
+                                    <td>Blocked</td>
+                                }
+                                else
+                                {
+                                    <td> </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+
+            }
+            else
+            {
+            <div class="text-center">
+                <h1 class="display-4">
+                    <a href="/Identity/Account/Login">Login</a> or <a href="/Identity/Account/Register">Register</a> to start
+                </h1>
+            </div>
+            }
